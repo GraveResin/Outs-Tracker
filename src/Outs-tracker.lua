@@ -2,7 +2,7 @@
     This script is to help keep track of
     the outs in the meat department at
     ███████ in ██████, ██ 1/8/2025.
-        --Written by: █████ ████████
+        --Written by:GraveResin
             --keep it clean
                 --mind the mess
 x======================================]] --
@@ -78,7 +78,7 @@ local function write_to_file(filename, items, current_list)
 	for key, item in pairs(items) do
 		file:write(string.format("%s, Number: %d\n", item.name, item.number))
 	end
-	file:write(string.format("Total Starting Outs: %d\n", total))
+	file:write(string.format("Total Outs: %d\n", total))
 	file:write("////////////////////\n\n")
 	file:flush()
 	file:close()
@@ -96,6 +96,32 @@ local function screen_clear()
 	end
 
 end
+--//////
+
+--//////
+--[[
+--Makes the directory that the list will be outputted in.
+local function folder_exists()
+	local folder_name = "lists"
+	local command
+	--attemptsto make this work on both Windows and Unix/Linux
+	if package.config:sub(1, 1) == "\\" then
+		command = "mkdir " .. folder_name
+	else
+		command = "mkdir -p " .. folder_name
+	end
+
+	local success = os.execute(command)
+	screen_clear()
+	if success then
+		print("Folder , " .. folder_name .. ", created successfully")
+	else
+		print("Failed to create: " .. folder_name .. ". Can not continue.")
+		print("Exiting...")
+		os.exit()
+	end
+end
+]]--
 --//////
 
 --//////
@@ -341,8 +367,8 @@ while true do
 					print("Error finding file: " .. (err or "Unknown error"))
 					break
 				else
-					file:write("Notes for: " .. os.date("%m/%d/%y") .. "\n\n")
-					file:write(":[No Notes]:\n////////////////////\n\n")
+					file:write("Notes for: " .. os.date("%m/%d/%y") .. "\n")
+					file:write(":[No Notes]:\n////////////////////\n")
 					file:flush()
 					break
 				end
