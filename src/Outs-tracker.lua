@@ -50,8 +50,7 @@ end
 --//////
 
 --//////
---Takes the items number and adds
---all together to get a total.
+--Takes the items number and adds all together to get a total.
 local function calculate_total(items)
 	local total = 0
 	for key, item in pairs(items) do
@@ -62,8 +61,7 @@ end
 --//////
 
 --//////
---Holds the logic for writing the
---data to the file.
+--Holds the logic for writing the data to the file.
 local function write_to_file(filename, items, current_list)
 	--calculates the total number of outs
 	local total = calculate_total(items)
@@ -72,13 +70,12 @@ local function write_to_file(filename, items, current_list)
 		print("Could not open " .. filename)
 		return
 	end
-	--Writes the data to the file along
-	--with the current data.
+	--Writes the data to the file along with the current date.
 	file:write(current_list .. " " .. os.date("%m/%d/%y\n"))
 	for key, item in pairs(items) do
 		file:write(string.format("%s, Number: %d\n", item.name, item.number))
 	end
-	file:write(string.format("Total Outs: %d\n", total))
+	file:write(string.format("Total number of Outs: %d\n", total))
 	file:write("////////////////////\n\n")
 	file:flush()
 	file:close()
@@ -104,7 +101,7 @@ end
 local function folder_exists()
 	local folder_name = "lists"
 	local command
-	--attemptsto make this work on both Windows and Unix/Linux
+	--attempts to make this work on both Windows and Unix/Linux
 	if package.config:sub(1, 1) == "\\" then
 		command = "mkdir " .. folder_name
 	else
@@ -127,8 +124,7 @@ end
 --//////
 --Makes the list type
 local out_list_type
---This handels the logic for making
---the file if it does not exist
+--This handels the logic for making the file if it does not exist
 local file_name = "outs_list.txt"
 if not file_exist(file_name) then
 	while true do
@@ -137,8 +133,7 @@ if not file_exist(file_name) then
 		if selection == "y" then
 			screen_clear()
 			local new_file, err = io.open(file_name, "w")
-			--Throws an error if the file
-			--cannot be opened.
+			--Throws an error if the file cannot be opened.
 			if not new_file then
 				print("Error opening file: " .. (err or "unkown error"))
 			else
@@ -161,7 +156,7 @@ end
 --//////
 
 --//////
---Just closes the when called if the file is even open or able to be closed
+--Just closes the file when called if the file is even open or able to be closed
 local function file_close(file, err)
 	if not file then
 		print("Error closing file: " .. (err or "unkown errer"))
@@ -198,7 +193,7 @@ local function print_list(file_read)
 				--Print "Ending Outs" header.
 				print("\n" .. line)
 			elseif in_today_section then
-				-- Stop reading if we reach the end of today's section,
+				--Stop reading if we reach the end of today's section,
 				if line:find("////////////////////") then
 					in_today_section = false
 				else
@@ -209,7 +204,7 @@ local function print_list(file_read)
 		end
 		file_close(file, err)
 
-		-- Handle cases where no data was found for today.
+		--Handle cases where no data was found for today.
 		if not found_starting_outs and not found_ending_outs then
 			print("No data found for today (" .. today .. ").")
 		end
@@ -277,13 +272,12 @@ end
 --Contains all of the items that we need. Change as needed.
 local items = {
 	CKN = { name = "CKN", number = 0 },
-	PORK = { name = "Pork", number = 0 },
-	STEAK = { name = "STEAK", number = 0 },
-	GB = { name = "GB", number = 0 }
+	PRK = { name = "Prk", number = 0 },
+	STK = { name = "STK", number = 0 },
+	GB  = { name = "GB", number  = 0 }
 }
 
 screen_clear()
-print("Welocome to the Outs-Tracker written by Chris Franklin")
 while true do
 	local file, err = io.open(file_name, "a")
 	--Displays the options to select.
@@ -300,14 +294,16 @@ while true do
 		out_list_type = "Starting Outs"
 		update_items(items)
 		write_to_file(file_name, items, out_list_type)
-		--Asks if you would like to see the
-		--outs and the total outs.
+		screen_clear()
+		--Asks if you would like to see the outs and the total outs.
 		print("Would you like to see the counts of each item and the total outs? y/n")
 		while true do
 			local print_option = io.read()
 			if print_option == "y" then
 				screen_clear()
 				display_counts(items, out_list_type)
+				print("Press enter to continue...")
+				local cont = io.read()
 				break
 				--Exits if "n" is selected
 			elseif print_option == "n" then
@@ -333,6 +329,8 @@ while true do
 			local print_option = io.read()
 			if print_option == "y" then
 				display_counts(items, out_list_type)
+				print("Press enter to continue...")
+				local cont = io.read()
 				break
 				--Exits if "n" is selected
 			elseif print_option == "n" then
